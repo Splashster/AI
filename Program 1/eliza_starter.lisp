@@ -147,11 +147,11 @@
        '(
 	 ;; example greetings/farewells -- change them to sound like you
 	 ( (Hello 0)
-	   (Hello - have a seat and tell me how you feel today.) )
+	   (Hey hey!) )
 	 ( (0 you came here because 0)
-	   (A lot of people come here for that reason so you are not alone.) )
+	   (Morphius told me to!) )
 	 ( (0 Goodbye 0)
-	   (Goodbye - I hope you enjoyed this session.) )
+	   (Adios!) )
 
 	 ;; feelings
 	 ( (0 you think 0)
