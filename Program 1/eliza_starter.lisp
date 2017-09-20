@@ -46,10 +46,11 @@
 ;; uses 'instantiate' to fill in the blanks, and returns the completed
 ;; response
 
-(defun len (list)
-  (if list
-     (+ 1 (len (cdr list)))
-     0))
+;(defun len (list)
+;  (print list)
+;  (if list
+;     (print (+ 1 (len (cdr list))))
+;     0))
 
 ( defun respond ( sentence db )
   ( cond
@@ -59,9 +60,11 @@
     ;; if the result of matching the sentence against the current
     ;; pattern is a success, produce this response
     ( ( success ( setq result ( match sentence ( first ( car db ) ) ) ) )
-       (setf llen (length (first(car db))))
-          (print llen)
-          ( instantiate result (nth (random llen) db) ) )
+        (len db)
+	(print (list-length db))
+	(setf ran_num(random (list-length db)))
+	(print ran_num)
+     	( instantiate result (second(nth ran_num db ) )))
 
     ;; otherwise, keep looking through the DB
     ( t ( respond sentence ( cdr db ) ) ) ) )
@@ -130,7 +133,9 @@
     ;; numbers indicate what part of the partitioned sentence to
     ;; insert into the response
     ( ( numberp ( car response ) )
+      (print car response)
       ( setq index ( - ( car response ) 1 ) )
+      (print index)
       ( append ( nth index partitioned )
 	     ( instantiate partitioned ( cdr response ) ) ) )
     ( t ( cons ( car response )
@@ -180,17 +185,17 @@
    ( (0 I came here because 0)
      (Because I live here and you are trespassing......) )
 
-	 ;; feelings
-	 ( (0 you think 0)
-	   (And just why do you think 4 ?) )
-
+   ;; feelings
+   ( (0 you think 0)
+     (And just why do you think 4 ?) )
    ( (0 you are feeling 0)
      (Why are you feeling 4 ?) )
 
-	 ;; the catch-alls
-	 ( (0)
-	  (Could you expand on that?)
-    (Tell me more))
+   ;; the catch-alls
+   ( (0)
+     (Could you expand on that?) )
+   (  (0)
+     (Tell me more))
    ( (0)
     (You lost me....))
    ( (0)
