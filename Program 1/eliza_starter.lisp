@@ -59,9 +59,10 @@
     ;; if the result of matching the sentence against the current
     ;; pattern is a success, produce this response
     ( ( success ( setq result ( match sentence ( first ( car db ) ) ) ) )
-       (setf llen (length (first(car db))))
-          (print llen)
-          ( instantiate result (nth (random llen) db) ) )
+      ; (setf llen (length (first(car db))))
+          ;(print llen)
+          ;(nth (random llen) db)
+          ( instantiate result ( second ( car db ) )  ) )
 
     ;; otherwise, keep looking through the DB
     ( t ( respond sentence ( cdr db ) ) ) ) )
@@ -167,6 +168,14 @@
    ;; keywords
    ( (0 hurt 0)
      (You should see a doctor for that) )
+   ( (0 smell 0)
+     (I do not have a sense of smell thankfully) )
+   ( (0 fun 0)
+     (Fun is an understatment) )
+   ( (0 life 0)
+     (Just so you know the meaning of life is \42) )
+   ( (0 curious 0)
+     (They say curiousity killed the cat) )
 
 	 ;; example greetings/farewells -- change them to sound like you
 	 ( (Hello 0)
@@ -179,6 +188,8 @@
      (1 Morphius told you to!) )
    ( (0 I came here because 0)
      (Because I live here and you are trespassing......) )
+   ( (0 How has 0)
+     (I do not how 4))
 
 	 ;; feelings
 	 ( (0 you think 0)
