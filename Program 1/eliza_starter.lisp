@@ -8,7 +8,7 @@
 ;; punctuation, please!), comes back with a response like you would.
 
 ( defun eliza ( sentence )
-  ( respond ( change-pros sentence ) database ) )
+  ( respond ( change-pros sentence ) database ))
 
 ;;----------------------------------------------------------------------------
 ;; change-pros: changes the pronouns of the sentence so that Eliza can
@@ -16,12 +16,24 @@
 ;; references.
 
 ( defun change-pros ( sentence )
-  ( cond 
+  ( cond
     ( ( null sentence ) nil )
     ( ( equal ( car sentence ) 'you )
       ( cons 'I ( change-pros ( cdr sentence ) ) ) )
     ( ( equal ( car sentence ) 'I )
       ( cons 'you ( change-pros ( cdr sentence ) ) ) )
+    ( ( equal ( car sentence ) 'myself )
+      ( cons 'yourself ( change-pros ( cdr sentence ) ) ) )
+    ( ( equal ( car sentence ) 'yourself )
+      ( cons 'myself ( change-pros ( cdr sentence ) ) ) )
+    ( ( equal ( car sentence ) 'my )
+      ( cons 'your ( change-pros ( cdr sentence ) ) ) )
+    ( ( equal ( car sentence ) 'your )
+      ( cons 'my ( change-pros ( cdr sentence ) ) ) )
+    ( ( equal ( car sentence ) '(I am) )
+      ( cons '(you are) ( change-pros ( cdr sentence ) ) ) )
+    ( ( equal ( car sentence ) '(you are) )
+      ( cons '(I am) ( change-pros ( cdr sentence ) ) ) )
 
     ;; CHANGE THIS: add more cases here of pronouns or other words
     ;; that should flip in order for this to work well
@@ -34,6 +46,11 @@
 ;; uses 'instantiate' to fill in the blanks, and returns the completed
 ;; response
 
+(defun len (list)
+  (if list
+     (+ 1 (len (cdr list)))
+     0))
+
 ( defun respond ( sentence db )
   ( cond
     ;; end of DB, return nil - should never really happen
@@ -42,7 +59,9 @@
     ;; if the result of matching the sentence against the current
     ;; pattern is a success, produce this response
     ( ( success ( setq result ( match sentence ( first ( car db ) ) ) ) )
-      ( instantiate result ( second ( car db ) ) ) )
+       (setf llen (length (first(car db))))
+          (print llen)
+          ( instantiate result (nth (random llen) db) ) )
 
     ;; otherwise, keep looking through the DB
     ( t ( respond sentence ( cdr db ) ) ) ) )
@@ -64,7 +83,7 @@
     ;; a variable, eat it and try and match the rest of the pattern to
     ;; the null sentence (will only work if all variables); otherwise,
     ;; fail
-    ( ( null data ) 
+    ( ( null data )
       ( cond
 	( ( variablep ( car pattern ) )
 	  ( if ( success ( setq result ( match data ( cdr pattern ) ) ) )
@@ -86,7 +105,7 @@
     ;; all of the pattern, return the appropriate stuff; if all of the
     ;; data (variable eats nothing) matches the rest of the pattern,
     ;; return appropriate stuff; else, fail.
-    ( ( variablep ( car pattern ) ) 
+    ( ( variablep ( car pattern ) )
       ( cond
 	;; variable eats nothing;  () is put in partitioned sentence
 	( ( success ( setq result ( match data ( cdr pattern ) ) ) )
@@ -139,25 +158,45 @@
 ;;---------------------------------------------------------------------------
 
 ;; CHANGE THIS: add more to this database so that the interaction is
-;; more interesting and communicative and so that Eliza sounds like you 
+;; more interesting and communicative and so that Eliza sounds like you
 ;; would sound in the same conversation!
 ;;---------------------------------------------------------------------------
 
 ( setq database
        '(
+   ;; keywords
+   ( (0 hurt 0)
+     (You should see a doctor for that) )
+
 	 ;; example greetings/farewells -- change them to sound like you
 	 ( (Hello 0)
 	   (Hey hey!) )
-	 ( (0 you came here because 0)
-	   (Morphius told me to!) )
 	 ( (0 Goodbye 0)
 	   (Adios!) )
+
+   ;; example questions
+   ( (0 you came here because 0)
+     (1 Morphius told you to!) )
+   ( (0 I came here because 0)
+     (Because I live here and you are trespassing......) )
 
 	 ;; feelings
 	 ( (0 you think 0)
 	   (And just why do you think 4 ?) )
 
-	 ;; the catch-alls
-	 ( (0) 
-	   (Could you expand on that?) ) ) )
+   ( (0 you are feeling 0)
+     (Why are you feeling 4 ?) )
 
+	 ;; the catch-alls
+	 ( (0)
+	  (Could you expand on that?)
+    (Tell me more))
+   ( (0)
+    (You lost me....))
+   ( (0)
+    (Run that back))
+   ( (0)
+    (You don\'t say....))
+   ( (0)
+    (You don\'t say....))
+    ) )
