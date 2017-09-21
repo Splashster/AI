@@ -46,11 +46,12 @@
 ;; uses 'instantiate' to fill in the blanks, and returns the completed
 ;; response
 
-;(defun len (list)
-;  (print list)
-;  (if list
-;     (print (+ 1 (len (cdr list))))
-;     0))
+;;(defun len (list)
+;;  (print (nth 6 (car list)))
+;;  (print (list-length (car list)))
+;;  (if list
+;;     (print (+ 1 (len (cdr list))))
+;;     0))
 
 ( defun respond ( sentence db )
   ( cond
@@ -59,12 +60,13 @@
 
     ;; if the result of matching the sentence against the current
     ;; pattern is a success, produce this response
-    ( ( success ( setq result ( match sentence ( first ( car db ) ) ) ) )
-        (len db)
-	(print (list-length db))
-	(setf ran_num(random (list-length db)))
-	(print ran_num)
-     	( instantiate result (second(nth ran_num db ) )))
+  ( ( success ( setq result ( match sentence ( first ( car db ) ) ) ) )
+     ;;(len db)
+     ;;(print result)
+	   (setf db_len (list-length (car db)))
+	   (setf ran_num(+ 1(random (- db_len 1))))
+	   ;;(print ran_num)
+     ( instantiate result (nth ran_num (car db))))
 
     ;; otherwise, keep looking through the DB
     ( t ( respond sentence ( cdr db ) ) ) ) )
@@ -203,15 +205,9 @@
 
    ;; the catch-alls
    ( (0)
-     (Could you expand on that?) )
-   (  (0)
-     (Tell me more))
-   ( (0)
-    (You lost me....))
-   ( (0)
-    (Run that back))
-   ( (0)
-    (You don\'t say....))
-   ( (0)
-    (You don\'t say....))
+     (Could you expand on that?)
+     (Tell me more)
+     (You lost me....)
+     (Run that back)
+     (You don\'t say....))
     ) )
