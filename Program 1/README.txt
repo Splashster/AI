@@ -26,5 +26,5 @@ Instructions:
 
 
 Notes:
-	Do not send messages with only special characters. Messages with only special characters my   	cause the program to crash or stall.
+	Do not send messages with only special characters. Messages with only special characters may cause the program to crash or stall.
 	
