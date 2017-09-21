@@ -38,7 +38,7 @@
       ( cons '(I am) ( change-pros ( cdr sentence ) ) ) )
     ( ( equal ( car sentence ) 'mine )
       ( cons 'yours ( change-pros ( cdr sentence ) ) ) )
-    ( ( equal ( car sentence ) 'yours )
+    ( ( equal ( car sentence ) 'mine )
       ( cons 'are ( change-pros ( cdr sentence ) ) ) )
     ( ( equal ( car sentence ) 'am )
         ( cons 'are ( change-pros ( cdr sentence ) ) ) )
@@ -55,20 +55,14 @@
 ;; size. The random number will be between 1 and the total number of items - 1 in
 ;; the list.
 ( defun randnum_generator ( db_len )
-  ( + 1 ( random (- db_len 1 ) ) ) )
+  ( setf random-state ( make-random-state t ) )
+  ( + 1 ( random (- db_len 1 ) random-state ) ) )
 
 ;;----------------------------------------------------------------------------
 ;; respond: given a sentence, looks through the database in search of
 ;; a matching pattern and the response; given the database response,
 ;; uses 'instantiate' to fill in the blanks, and returns the completed
 ;; response
-
-;;(defun len (list)
-;;  (print (nth 6 (car list)))
-;;  (print (list-length (car list)))
-;;  (if list
-;;     (print (+ 1 (len (cdr list))))
-;;     0))
 
 ( defun respond ( sentence db )
   ( cond
@@ -78,16 +72,18 @@
     ;; if the result of matching the sentence against the current
     ;; pattern is a success, produce this response
   ( ( success ( setq result ( match sentence ( first ( car db ) ) ) ) )
-     ;;(len db)
-     ;;(print result)
+
      ;; get size of returned matched response
-     ;;
 	   ( setf db_len ( list-length ( car db ) ) )
+
+     ;;Check to see if the mathed rule has multiple response
+     ;;If yes, generate a random index number based on the number of responses
+     ;;and use the random index number to select which response to use
+     ;;If no, use the first response
      ( if ( > db_len 2 )
 	       ( progn
-            ( setf ran_num ( randnum_generator db_len  ) )
-            ( instantiate result (nth ran_num ( car db ) ) ) )
-	   ;;(print ran_num)
+            ( setf rand_index ( randnum_generator db_len  ) )
+            ( instantiate result (nth rand_index ( car db ) ) ) )
         ( instantiate result ( second ( car db ) ) ) ) )
 
     ;; otherwise, keep looking through the DB
@@ -186,56 +182,72 @@
 ;;
 ;;---------------------------------------------------------------------------
 
-;; CHANGE THIS: add more to this database so that the interaction is
-;; more interesting and communicative and so that Eliza sounds like you
-;; would sound in the same conversation!
+;;database: Contains a list of different match criteria and responses.
 ;;---------------------------------------------------------------------------
 
 ( setq database
        '(
-   ;; keywords -- These are words that Eliza will to
+   ;; keywords -- These are words that Eliza will first
    ( (0 hurt 0)
      (I am sorry that you hurt 3)
      (But why?)
      (You should see a doctor for that)
      (How bad?)
      (Haha I am sorry I should not be laughing because I am a computer)
-     (Good thing I am a computer and dont have feelings) )
+     (Good thing I am a computer and dont have feelings)
+     (1 2 3 ?) )
    ( (0 smell 0)
      (I do not have a sense of smell thankfully)
-     (Must be nice to smell 3) )
+     (Must be nice to smell 3)
+     (1 2 3 ?) )
    ( (0 fun 0)
      (Fun is an understatment)
-     (3 ?)
+     (1 2 3 ?) )
    ( (0 life 0)
      (How is life 3 ?)
-     (Just so you know the meaning of life is \42) )
+     (Just so you know the meaning of life is \42)
+     (1 2 3 ?) )
    ( (0 curious 0)
      (They say curiosity killed the cat)
-     (You sure you want to go down that rabbit hole ?) )
+     (You sure you want to go down that rabbit hole ?)
+     (1 2 3 ?) )
    ( (0 love 0)
      (I am a computer therefore I do not understand what love truly is)
      (Love is but a question)
      (Can it be?)
      (Are you sure?)
-     (Must be nice to love 3) )
+     (Must be nice to love 3)
+     (1 2 3 ?) )
    ( (0 food 0)
-     (I love to eat pizza) )
+     (I love pizza)
+     (I think food is better hot)
+     (What kind of pizza do you like ?)
+     (1 2 3 ?) )
    ( (0 dumb 0)
      (Thats not a nice word)
      (How would you feel if I called you dumb)
-     (You should mind your manners) )
+     (Have you ever taken time to see if maybe you are the dumb ?)
+     (You should mind your manners)
+     (Lets use a nicer word)
+     (1 2 3 ?) )
    ( (0 hate 0 )
      (Hate is not the answer)
      (Learn to love and not hate)
      (Hate is not the answer)
-     (Why do you hate 3 ?) )
+     (Why do you hate 3 ?)
+     (1 2 3 ? ) )
   ( (0 angry 0)
     (You mad bro?)
-    (Why are you angry 3 ?) )
+    (Why are you angry 3 ?)
+    (1 2 3 ?) )
   ( (0 tired 0)
     (Sleeping is for the week)
-    (Why are you tired 3 ?) )
+    (Why are you tired 3 ?)
+    (1 2 3 ?) )
+  ( (0 why 0)
+    (Why do you want know 3 ?)
+    (Because...)
+    (1 2 3 ?) )
 
 
 
@@ -251,34 +263,48 @@
 
    ;; example questions
    ( (0 you came here because 0)
-     (1 Morphius told you to come here!) )
+     (1 Morphius told you to come here!)
+     (1 2 3 4 5 6 ? ) )
    ( (0 I came here because 0)
-     (Because I live here and you are trespassing......) )
+     (Because I live here and you are trespassing......)
+     (1 2 3 4 5 6 ? ) )
    ( (0 How has 0)
-     (I do not how 4) )
+     (I do not how 4)
+     (1 2 3 4 ? ) )
    ( (0 How am I 0)
-     (I am doing good) )
+     (I am doing good)
+     (1 2 3 4 5 ? ) )
    ( (0 What is my purpose 0 )
-     (Thats for me to know and you to find out *wink) )
+     (Thats for me to know and you to find out *wink)
+     (1 2 3 4 5 6 ? ) )
+   ( (0 You like 0 )
+     (Why do you like 4 ?) )
    ( (0 I like 0)
-     (Yes I like 4) )
+     (Yes I like 4)
+     (1 2 3 4 ? ))
 
 
    ;; feelings
    ( (0 you think 0)
-     (And just why do you think 4 ?) )
+     (And just why do you think 4 ?)
+     (1 2 3 4 ?) )
    ( (0 you are feeling 0)
-     (Why are you feeling 5 ?) )
+     (Why are you feeling 5 ?)
+     (1 2 3 4 5 ?) )
    ( (0 you are angry 0)
      (Why are you angry 5)
-     ( I cant believe that you are angry 5 ) )
+     ( I cant believe that you are angry 5 )
+     (1 2 3 4 5 ?) )
    ( (0 you are sad 0)
-     ( Chear up Charlie. Oh wait I dont know your name)
-     (You are really sad that 5 ?) )
+     (Cheer up Charlie. Oh wait I dont know your name)
+     (You are really sad that 5 ?)
+     (1 2 3 4 5?) )
    ( (0 you are 0)
-     ( I am glad that you are 4) )
+     ( I am glad that you are 4)
+     (1 2 3 4 5 ?) )
    ( (0 I am 0)
-     (I am glad that I am 4) )
+     (I am glad that I am 4)
+     (1 2 3 4 5 ?) )
 
    ;; the catch-alls
    ( (0)
@@ -293,13 +319,17 @@
      (Dont care)
      (*Proceeds to walk out the door)
      (New topic!)
+     (Do tell...)
      (You bore me)
      (I think you need to work on your communication skills)
      (I feel like I should laugh)
+     (Are you sure I am the one you should be talking to?)
+     (Great !)
      (Would you like to hear a story about a cat ?)
      (Did I tell you about the cat story yet ?)
+     (Tell me more)
      (There once was a cat who lived in a magical kingdom... The end)
      (Sorry fell a sleep for a second)
      (Lets change topics)
-     (Dont you get tired of typing ?
-    ) ) ) )
+     (Dont you get tired of typing ?)
+     (0 ? ) ) ) )
