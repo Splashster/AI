@@ -301,10 +301,10 @@
      (1 2 3 4 5?) )
    ( (0 you are 0)
      ( I am glad that you are 4)
-     (1 2 3 4 5 ?) )
+     (1 2 3 4 ?) )
    ( (0 I am 0)
      (I am glad that I am 4)
-     (1 2 3 4 5 ?) )
+     (1 2 3 4 ?) )
 
    ;; the catch-alls
    ( (0)
