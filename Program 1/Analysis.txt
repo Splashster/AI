@@ -1,0 +1,11 @@
+﻿I think I did well with trying to come up with rules that would work for a variety of different user inputs. For instance if you were to say “I am mad” Eliza would say “I am glad that you are mad” or if you said “I am happy” Eliza would say I am glad you are happy. I still feel that much more could be I found the creation of the rules to be interesting and challenging. I really wanted add options like remembering what the last user input was and dynamically updating the rules database, but I found it challenging trying to do that in LISP. 
+
+I believe that the poor conversation with Eliza was due to Eliza being limited to what rules you give her. It was hard to come up with rules that would not be based on specific conversations.
+Even if you designed an enormous subset of rules, you would eventually get bad responses because the number of conversations someone could have is infinite. Another problem I had was with the catch all responses because some of the catch all responses repeated.
+
+The catch all statements add on to making the conversation poor because the random
+
+
+One of the biggest things I think that Eliza should be able to do is dynamically update her rules database as the conversation with the user goes on. By this I mean she feeds off the users input and is able to make rules based off what is said in the conversation. Dynamically updating her rules database should improve the conversations between Eliza and the user. Another great feature to add would be the ability to process and store what is being said in the conversation. Having Eliza dynamically update her rules database would be great; However, it would kind of be pointless if the updated rules were not stored somewhere so that Eliza could 
+
+I think if there was a way to process the user input and use it within the co 

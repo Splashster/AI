@@ -22,6 +22,8 @@
       ( cons 'I ( change-pros ( cdr sentence ) ) ) )
     ( ( equal ( car sentence ) 'I )
       ( cons 'you ( change-pros ( cdr sentence ) ) ) )
+    ( ( equal ( car sentence ) 'me )
+      ( cons 'you ( change-pros ( cdr sentence ) ) ) )
     ( ( equal ( car sentence ) 'myself )
       ( cons 'yourself ( change-pros ( cdr sentence ) ) ) )
     ( ( equal ( car sentence ) 'yourself )
@@ -34,11 +36,26 @@
       ( cons '(you are) ( change-pros ( cdr sentence ) ) ) )
     ( ( equal ( car sentence ) '(you are) )
       ( cons '(I am) ( change-pros ( cdr sentence ) ) ) )
+    ( ( equal ( car sentence ) 'mine )
+      ( cons 'yours ( change-pros ( cdr sentence ) ) ) )
+    ( ( equal ( car sentence ) 'yours )
+      ( cons 'are ( change-pros ( cdr sentence ) ) ) )
+    ( ( equal ( car sentence ) 'am )
+        ( cons 'are ( change-pros ( cdr sentence ) ) ) )
+    ( ( equal ( car sentence ) 'are )
+        ( cons 'am ( change-pros ( cdr sentence ) ) ) )
 
     ;; CHANGE THIS: add more cases here of pronouns or other words
     ;; that should flip in order for this to work well
 
     ( t ( cons ( car sentence ) ( change-pros ( cdr sentence ) ) ) ) ) )
+
+;;----------------------------------------------------------------------------
+;; randnum_generator: generates and returns a random number based on a given list
+;; size. The random number will be between 1 and the total number of items - 1 in
+;; the list.
+( defun randnum_generator ( db_len )
+  ( + 1 ( random (- db_len 1 ) ) ) )
 
 ;;----------------------------------------------------------------------------
 ;; respond: given a sentence, looks through the database in search of
@@ -63,13 +80,20 @@
   ( ( success ( setq result ( match sentence ( first ( car db ) ) ) ) )
      ;;(len db)
      ;;(print result)
-	   (setf db_len (list-length (car db)))
-	   (setf ran_num(+ 1(random (- db_len 1))))
+     ;; get size of returned matched response
+     ;;
+	   ( setf db_len ( list-length ( car db ) ) )
+     ( if ( > db_len 2 )
+	       ( progn
+            ( setf ran_num ( randnum_generator db_len  ) )
+            ( instantiate result (nth ran_num ( car db ) ) ) )
 	   ;;(print ran_num)
-     ( instantiate result (nth ran_num (car db))))
+        ( instantiate result ( second ( car db ) ) ) ) )
 
     ;; otherwise, keep looking through the DB
     ( t ( respond sentence ( cdr db ) ) ) ) )
+
+
 
 ;;----------------------------------------------------------------------------
 ;; match: if there is not a match between this pattern and this data,
@@ -135,9 +159,7 @@
     ;; numbers indicate what part of the partitioned sentence to
     ;; insert into the response
     ( ( numberp ( car response ) )
-      (print car response)
       ( setq index ( - ( car response ) 1 ) )
-      (print index)
       ( append ( nth index partitioned )
 	     ( instantiate partitioned ( cdr response ) ) ) )
     ( t ( cons ( car response )
@@ -171,43 +193,113 @@
 
 ( setq database
        '(
-   ;; keywords
+   ;; keywords -- These are words that Eliza will to
    ( (0 hurt 0)
-     (You should see a doctor for that) )
+     (I am sorry that you hurt 3)
+     (But why?)
+     (You should see a doctor for that)
+     (How bad?)
+     (Haha I am sorry I should not be laughing because I am a computer)
+     (Good thing I am a computer and dont have feelings) )
    ( (0 smell 0)
-     (I do not have a sense of smell thankfully) )
+     (I do not have a sense of smell thankfully)
+     (Must be nice to smell 3) )
    ( (0 fun 0)
-     (Fun is an understatment) )
+     (Fun is an understatment)
+     (3 ?)
    ( (0 life 0)
+     (How is life 3 ?)
      (Just so you know the meaning of life is \42) )
    ( (0 curious 0)
-     (They say curiousity killed the cat) )
+     (They say curiosity killed the cat)
+     (You sure you want to go down that rabbit hole ?) )
+   ( (0 love 0)
+     (I am a computer therefore I do not understand what love truly is)
+     (Love is but a question)
+     (Can it be?)
+     (Are you sure?)
+     (Must be nice to love 3) )
+   ( (0 food 0)
+     (I love to eat pizza) )
+   ( (0 dumb 0)
+     (Thats not a nice word)
+     (How would you feel if I called you dumb)
+     (You should mind your manners) )
+   ( (0 hate 0 )
+     (Hate is not the answer)
+     (Learn to love and not hate)
+     (Hate is not the answer)
+     (Why do you hate 3 ?) )
+  ( (0 angry 0)
+    (You mad bro?)
+    (Why are you angry 3 ?) )
+  ( (0 tired 0)
+    (Sleeping is for the week)
+    (Why are you tired 3 ?) )
 
-	 ;; example greetings/farewells -- change them to sound like you
+
+
+	 ;;greetings/farewells
 	 ( (Hello 0)
 	   (Hey hey!) )
+   ( (0 What is my name 0)
+      ( Eliza) )
+   ( (0 Your name is 0)
+     (Nice to meet you 5 !) )
 	 ( (0 Goodbye 0)
 	   (Adios!) )
 
    ;; example questions
    ( (0 you came here because 0)
-     (1 Morphius told you to!) )
+     (1 Morphius told you to come here!) )
    ( (0 I came here because 0)
      (Because I live here and you are trespassing......) )
    ( (0 How has 0)
-     (I do not how 4))
+     (I do not how 4) )
+   ( (0 How am I 0)
+     (I am doing good) )
+   ( (0 What is my purpose 0 )
+     (Thats for me to know and you to find out *wink) )
+   ( (0 I like 0)
+     (Yes I like 4) )
+
 
    ;; feelings
    ( (0 you think 0)
      (And just why do you think 4 ?) )
    ( (0 you are feeling 0)
-     (Why are you feeling 4 ?) )
+     (Why are you feeling 5 ?) )
+   ( (0 you are angry 0)
+     (Why are you angry 5)
+     ( I cant believe that you are angry 5 ) )
+   ( (0 you are sad 0)
+     ( Chear up Charlie. Oh wait I dont know your name)
+     (You are really sad that 5 ?) )
+   ( (0 you are 0)
+     ( I am glad that you are 4) )
+   ( (0 I am 0)
+     (I am glad that I am 4) )
 
    ;; the catch-alls
    ( (0)
-     (Could you expand on that?)
-     (Tell me more)
      (You lost me....)
      (Run that back)
-     (You don\'t say....))
-    ) )
+     (You dont say....)
+     (Thats cool.... not)
+     (Be right back....)
+     (I need a break....)
+     (So ?)
+     (Oh well)
+     (Dont care)
+     (*Proceeds to walk out the door)
+     (New topic!)
+     (You bore me)
+     (I think you need to work on your communication skills)
+     (I feel like I should laugh)
+     (Would you like to hear a story about a cat ?)
+     (Did I tell you about the cat story yet ?)
+     (There once was a cat who lived in a magical kingdom... The end)
+     (Sorry fell a sleep for a second)
+     (Lets change topics)
+     (Dont you get tired of typing ?
+    ) ) ) )
