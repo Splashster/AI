@@ -45,8 +45,6 @@
     ( ( equal ( car sentence ) 'are )
         ( cons 'am ( change-pros ( cdr sentence ) ) ) )
 
-    ;; CHANGE THIS: add more cases here of pronouns or other words
-    ;; that should flip in order for this to work well
 
     ( t ( cons ( car sentence ) ( change-pros ( cdr sentence ) ) ) ) ) )
 
@@ -54,6 +52,7 @@
 ;; randnum_generator: generates and returns a random number based on a given list
 ;; size. The random number will be between 1 and the total number of items - 1 in
 ;; the list.
+
 ( defun randnum_generator ( db_len )
   ( setf random-state ( make-random-state t ) )
   ( + 1 ( random (- db_len 1 ) random-state ) ) )
@@ -76,7 +75,7 @@
      ;; get size of returned matched response
 	   ( setf db_len ( list-length ( car db ) ) )
 
-     ;;Check to see if the mathed rule has multiple response
+     ;;Check to see if the mathed pattern has multiple responses
      ;;If yes, generate a random index number based on the number of responses
      ;;and use the random index number to select which response to use
      ;;If no, use the first response
@@ -187,7 +186,7 @@
 
 ( setq database
        '(
-   ;; keywords -- These are words that Eliza will first
+   ;; keywords -- These are patterns Eliza will try to match on
    ( (0 hurt 0)
      (I am sorry that you hurt 3)
      (But why?)
@@ -281,7 +280,7 @@
      (Why do you like 4 ?) )
    ( (0 I like 0)
      (Yes I like 4)
-     (1 2 3 4 ? ))
+     (1 2 3 4 ? ) )
 
 
    ;; feelings
@@ -298,7 +297,7 @@
    ( (0 you are sad 0)
      (Cheer up Charlie. Oh wait I dont know your name)
      (You are really sad that 5 ?)
-     (1 2 3 4 5?) )
+     (1 2 3 4 5 ?) )
    ( (0 you are 0)
      ( I am glad that you are 4)
      (1 2 3 4 ?) )
