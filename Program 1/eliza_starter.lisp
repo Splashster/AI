@@ -244,10 +244,11 @@
     (Why are you tired 3 ?)
     (1 2 3 ?) )
   ( (0 why 0)
-    (Why do you want know 3 ?)
+    (Why do you want know why 3 ?)
     (Because...)
     (1 2 3 ?) )
-
+  ( (0 like 0)
+    (You like 3 ?) )
 
 
 	 ;;greetings/farewells
@@ -279,8 +280,14 @@
    ( (0 You like 0 )
      (Why do you like 4 ?) )
    ( (0 I like 0)
-     (Yes I like 4)
+     (I like 4)
      (1 2 3 4 ? ) )
+   ( (0 my favorite quote 0)
+     (There can be only one !)
+     (Water is for the weak !)
+     (How many feet are in a mile !)
+     (Whos the master! Shonuff!)
+     (Legendary Bruce Leeroy thinking hes the last dragon) )
 
 
    ;; feelings
@@ -329,5 +336,7 @@
      (There once was a cat who lived in a magical kingdom... The end)
      (Sorry fell a sleep for a second)
      (Lets change topics)
+     (Story of my life)
+     (Interesting....)
      (Dont you get tired of typing ?)
      ( 1 ? ) ) ) )
